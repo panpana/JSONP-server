@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<title>JSONP</title>
+</head>
+<body>
+	<h3>您的余额为<span id="amount">&&&amount&&&</span></h3>
+	<button id="button">打钱</button>
+</body>
+<script>
+	window.yyy = function(res){
+		  if(res === 'success'){
+		     alert('success')
+		     amount.innerText = amount.innerText - 1
+
+		   }else{
+		     alert('fail')
+		   }
+
+	}
+
+
+	button.addEventListener('click', (e) => {
+		let script = document.createElement('script')
+		script.src = '/pay?callbackName=yyy'
+		//script.src = '/pay'
+		document.body.appendChild(script)
+		script.onload = function(e){
+				console.log('success')
+				e.currentTarget.remove();
+			}
+			script.onerror = function(e){
+				console.log('fail')
+				e.currentTarget.remove();
+			}
+
+	})
+</script>
+<script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
+	
+</html>
