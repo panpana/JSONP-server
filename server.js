@@ -3,19 +3,19 @@ var fs = require('fs')
 var url = require('url')
 var port = process.argv[2]
 
-if(!port){
-  console.log('请指定端口号好不啦？\nnode server.js 8888 这样不会吗？')
-  process.exit(1)
+if (!port) {
+    console.log('请指定端口号好不啦？\nnode server.js 8888 这样不会吗？')
+    process.exit(1)
 }
 
-var server = http.createServer(function(request, response){
-  var parsedUrl = url.parse(request.url, true)
-  var pathWithQuery = request.url 
-  var queryString = ''
-  if(pathWithQuery.indexOf('?') >= 0){ queryString = pathWithQuery.substring(pathWithQuery.indexOf('?')) }
-  var path = parsedUrl.pathname
-  var query = parsedUrl.query
-  var method = request.method
+var server = http.createServer(function(request, response) {
+    var parsedUrl = url.parse(request.url, true)
+    var pathWithQuery = request.url
+    var queryString = ''
+    if (pathWithQuery.indexOf('?') >= 0) { queryString = pathWithQuery.substring(pathWithQuery.indexOf('?')) }
+    var path = parsedUrl.pathname
+    var query = parsedUrl.query
+    var method = request.method
     if (path === '/') {
         var string = fs.readFileSync('./index.html', 'utf8')
         var amount = fs.readFileSync('./db', 'utf8')
@@ -24,14 +24,14 @@ var server = http.createServer(function(request, response){
         response.write(string)
         response.end()
     } else if (path === '/pay') {
-        var amount = fs.readFileSync('./db', 'utf8')
-        var newAmount = amount - 1
-        fs.writeFileSync('./db', newAmount)
+        let amount = fs.readFileSync('./db', 'utf8')
+        amount -= 1
+        fs.writeFileSync('./db', amount)
+        let callbackName = query.callback
         response.setHeader('Content-Type', 'application/javascript')
-        response.statusCode = 200
-        response.write(`${query.callbackName}.call(undefined,'success')`)
-        //response.write(`amount.innerText = amount.innerText - 1`)
-
+        response.write(`
+        ${callbackName}.call(undefined, 'success')
+    `)
         response.end()
 
     } else {

@@ -9,33 +9,23 @@
 	<button id="button">打钱</button>
 </body>
 <script>
-	window.yyy = function(res){
-		  if(res === 'success'){
-		     alert('success')
-		     amount.innerText = amount.innerText - 1
-
-		   }else{
-		     alert('fail')
-		   }
-
-	}
-
-
-	button.addEventListener('click', (e) => {
-		let script = document.createElement('script')
-		script.src = '/pay?callbackName=yyy'
-		//script.src = '/pay'
-		document.body.appendChild(script)
-		script.onload = function(e){
-				console.log('success')
-				e.currentTarget.remove();
-			}
-			script.onerror = function(e){
-				console.log('fail')
-				e.currentTarget.remove();
-			}
-
-	})
+button.addEventListener('click', (e)=>{
+    let script = document.createElement('script')
+    let functionName = 'panpan'+ parseInt(Math.random()*10000000 ,10)
+    window[functionName] = function(){  // 每次请求之前搞出一个随机的函数
+        amount.innerText = amount.innerText - 0 - 1
+    }
+    script.src = '/pay?callback=' + functionName
+    document.body.appendChild(script)
+    script.onload = function(e){ 
+        e.currentTarget.remove()
+        delete window[functionName] 
+    }
+    script.onload = function(e){ 
+        e.currentTarget.remove()
+        delete window[functionName] 
+    }
+})
 </script>
 <script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
 	
